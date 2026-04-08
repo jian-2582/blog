@@ -12,6 +12,7 @@ const repoRoot = process.env.BLOG_REPO_ROOT || path.resolve(__dirname, '..');
 const contentRoot = process.env.BLOG_CONTENT_ROOT || path.join(repoRoot, '.content-admin');
 const blogDir = path.join(contentRoot, 'blog');
 const projectsDir = path.join(contentRoot, 'projects');
+const initializedFlag = path.join(contentRoot, '.initialized');
 const port = Number(process.env.BLOG_ADMIN_PORT || 4322);
 const username = process.env.BLOG_ADMIN_USERNAME || 'admin';
 const password = process.env.BLOG_ADMIN_PASSWORD || '';
@@ -27,8 +28,7 @@ if (!password || !sessionSecret) {
 
 await ensureDirectory(blogDir);
 await ensureDirectory(projectsDir);
-await seedContentIfEmpty(path.join(repoRoot, 'src', 'content', 'blog'), blogDir);
-await seedContentIfEmpty(path.join(repoRoot, 'src', 'content', 'projects'), projectsDir);
+await seedContentIfNeeded();
 
 setInterval(cleanExpiredSessions, 15 * 60 * 1000).unref();
 
@@ -122,13 +122,26 @@ async function ensureDirectory(dir) {
   await fs.mkdir(dir, { recursive: true });
 }
 
-async function seedContentIfEmpty(sourceDir, targetDir) {
-  const current = await fs.readdir(targetDir);
-  if (current.length > 0) {
+async function seedContentIfNeeded() {
+  try {
+    await fs.access(initializedFlag);
     return;
+  } catch {
+    // 首次启动时才执行种子复制
   }
 
+  await seedCollection(path.join(repoRoot, 'src', 'content', 'blog'), blogDir);
+  await seedCollection(path.join(repoRoot, 'src', 'content', 'projects'), projectsDir);
+  await fs.writeFile(initializedFlag, `${new Date().toISOString()}\n`, 'utf-8');
+}
+
+async function seedCollection(sourceDir, targetDir) {
   try {
+    const current = await fs.readdir(targetDir);
+    if (current.length > 0) {
+      return;
+    }
+
     const sourceItems = await fs.readdir(sourceDir);
     await Promise.all(
       sourceItems

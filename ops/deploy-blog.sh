@@ -35,12 +35,12 @@ fi
 git checkout -f "${BRANCH}"
 git reset --hard "${REMOTE}/${BRANCH}"
 
-if [ -d "${CONTENT_ROOT}/blog" ] && [ "$(find "${CONTENT_ROOT}/blog" -mindepth 1 -maxdepth 1 | wc -l)" -gt 0 ]; then
+if [ -d "${CONTENT_ROOT}/blog" ]; then
   mkdir -p "${REPO_DIR}/src/content/blog"
   rsync -a --delete "${CONTENT_ROOT}/blog/" "${REPO_DIR}/src/content/blog/"
 fi
 
-if [ -d "${CONTENT_ROOT}/projects" ] && [ "$(find "${CONTENT_ROOT}/projects" -mindepth 1 -maxdepth 1 | wc -l)" -gt 0 ]; then
+if [ -d "${CONTENT_ROOT}/projects" ]; then
   mkdir -p "${REPO_DIR}/src/content/projects"
   rsync -a --delete "${CONTENT_ROOT}/projects/" "${REPO_DIR}/src/content/projects/"
 fi
