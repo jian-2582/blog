@@ -9,6 +9,7 @@ KEEP_RELEASES=5
 BRANCH=main
 REMOTE=origin
 REPO_URL=https://github.com/jian-2582/blog.git
+CONTENT_ROOT=/opt/blog-content
 
 exec 9>"$LOCK_FILE"
 flock -n 9 || exit 0
@@ -33,6 +34,17 @@ fi
 
 git checkout -f "${BRANCH}"
 git reset --hard "${REMOTE}/${BRANCH}"
+
+if [ -d "${CONTENT_ROOT}/blog" ] && [ "$(find "${CONTENT_ROOT}/blog" -mindepth 1 -maxdepth 1 | wc -l)" -gt 0 ]; then
+  mkdir -p "${REPO_DIR}/src/content/blog"
+  rsync -a --delete "${CONTENT_ROOT}/blog/" "${REPO_DIR}/src/content/blog/"
+fi
+
+if [ -d "${CONTENT_ROOT}/projects" ] && [ "$(find "${CONTENT_ROOT}/projects" -mindepth 1 -maxdepth 1 | wc -l)" -gt 0 ]; then
+  mkdir -p "${REPO_DIR}/src/content/projects"
+  rsync -a --delete "${CONTENT_ROOT}/projects/" "${REPO_DIR}/src/content/projects/"
+fi
+
 npm ci
 npm run build
 

@@ -1,0 +1,15 @@
+[Unit]
+Description=Blog admin panel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/site-source
+EnvironmentFile=/etc/blog-admin.env
+ExecStart=/usr/bin/node /opt/site-source/admin/server.mjs
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
