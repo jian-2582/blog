@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../components/BaseLayout.astro';
-import PageHero from '../../components/PageHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getProjects } from '../../lib/content';
 
@@ -8,15 +7,11 @@ const projects = await getProjects();
 ---
 
 <BaseLayout title="项目 | 刘强的个人工作台" description="项目与实验列表" currentPath="/projects">
-  <PageHero
-    eyebrow="项目"
-    title="把写下来的思考，再做成真实可用的东西"
-    description="这里放的是产品、工具、工作流和站点实验。相比炫技，更看重长期可维护和真正可用。"
-    aside={[
-      { label: '项目总数', value: `${projects.length} 个` },
-      { label: '更新方式', value: '持续维护' },
-    ]}
-  />
+  <section class="page-header panel">
+    <span class="eyebrow">项目</span>
+    <h1>项目记录</h1>
+    <p>这里放的是产品、工具、工作流和站点实验。相比炫技，更看重长期可维护和真正可用。</p>
+  </section>
 
   <section class="container project-grid">
     {projects.map((project) => <ProjectCard project={project} />)}
@@ -24,11 +19,28 @@ const projects = await getProjects();
 </BaseLayout>
 
 <style>
+  .page-header {
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+
+  .page-header h1 {
+    margin: 12px 0 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    line-height: 1.25;
+  }
+
+  .page-header p {
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    line-height: 1.85;
+  }
+
   .project-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px;
-    margin-top: 24px;
   }
 
   @media (max-width: 900px) {

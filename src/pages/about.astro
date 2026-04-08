@@ -1,19 +1,14 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
-import PageHero from '../components/PageHero.astro';
 import { siteConfig } from '../data/site';
 ---
 
 <BaseLayout title="关于 | 刘强的个人工作台" description="关于这座站点与作者" currentPath="/about">
-  <PageHero
-    eyebrow="关于"
-    title="我想把这座站做成一座长期在线、长期更新的个人工作台"
-    description="这里会持续记录我真实在做的事：人工智能工具怎么进入工作流，网站怎么长期维护，自动化怎样让事情变得更顺。"
-    aside={[
-      { label: '关注主题', value: '人工智能 / 自动化 / 网站' },
-      { label: '写作原则', value: '真实、清楚、可复用' },
-    ]}
-  />
+  <section class="page-header panel">
+    <span class="eyebrow">关于</span>
+    <h1>关于这座站点与作者</h1>
+    <p>这里会持续记录我真实在做的事：人工智能工具怎么进入工作流，网站怎么长期维护，自动化怎样让事情变得更顺。</p>
+  </section>
 
   <section class="container two-column about-grid">
     <article class="panel about-main">
@@ -53,8 +48,25 @@ import { siteConfig } from '../data/site';
 </BaseLayout>
 
 <style>
+  .page-header {
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+
+  .page-header h1 {
+    margin: 12px 0 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    line-height: 1.25;
+  }
+
+  .page-header p {
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    line-height: 1.85;
+  }
+
   .about-grid {
-    margin-top: 24px;
     align-items: start;
   }
 

@@ -1,14 +1,13 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
-import PageHero from '../components/PageHero.astro';
 ---
 
 <BaseLayout title="搜索 | 刘强的个人工作台" description="全文搜索文章和项目" currentPath="/search">
-  <PageHero
-    eyebrow="搜索"
-    title="全文搜索站内内容"
-    description="站内搜索会在构建后自动生成全文检索索引，搜索范围覆盖文章正文与项目页面。"
-  />
+  <section class="page-header panel">
+    <span class="eyebrow">搜索</span>
+    <h1>全文搜索站内内容</h1>
+    <p>站内搜索会在构建后自动生成全文检索索引，搜索范围覆盖文章正文与项目页面。</p>
+  </section>
 
   <section class="container panel search-panel">
     <div id="search"></div>
@@ -45,8 +44,25 @@ import PageHero from '../components/PageHero.astro';
 </BaseLayout>
 
 <style>
+  .page-header {
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+
+  .page-header h1 {
+    margin: 12px 0 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    line-height: 1.25;
+  }
+
+  .page-header p {
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    line-height: 1.85;
+  }
+
   .search-panel {
-    margin-top: 24px;
     padding: 28px;
   }
 
