@@ -41,6 +41,7 @@ analytics.usgpt.us {
 }
 
 admin.usgpt.us {
+  tls /etc/letsencrypt/live/usgpt.us/fullchain.pem /etc/letsencrypt/live/usgpt.us/privkey.pem
   encode zstd gzip
   reverse_proxy 127.0.0.1:4322
 }
