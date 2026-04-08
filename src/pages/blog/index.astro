@@ -4,219 +4,227 @@ import { getAllTags, getFeaturedPosts, getPublishedPosts, getTagCountMap } from 
 import { slugifyTag } from '../../lib/format';
 
 const posts = await getPublishedPosts();
-const featuredPosts = await getFeaturedPosts();
+const featuredPosts = await getFeaturedPosts(3);
 const tags = getAllTags(posts);
 const tagCounts = getTagCountMap(posts);
 ---
 
 <BaseLayout title="文章 | 刘强的个人工作台" description="文章归档与专题索引" currentPath="/blog">
-  <section class="blog-hero panel">
-    <span class="eyebrow">文章列表</span>
-    <h1 class="hero-title">文章归档与专题索引</h1>
-    <p class="hero-copy">阅读页保持安静，列表页更强调秩序与筛选感。让读者一眼知道你在长期写什么，以及该从哪里开始读起。</p>
-    <div class="tag-cloud">
-      {tags.map((tag) => (
-        <a class="chip" href={`/tags/${slugifyTag(tag)}/`}>
-          {tag}
-          <small>{tagCounts[tag]}</small>
-        </a>
-      ))}
-    </div>
-  </section>
-
   <section class="blog-layout">
     <aside class="blog-sidebar">
-      <div class="sidebar-card panel">
-        <h2>浏览方式</h2>
-        <div class="sidebar-list">
-          <span><em>全部文章</em><strong>{posts.length}</strong></span>
-          <span><em>精选文章</em><strong>{featuredPosts.length}</strong></span>
-          <span><em>专题标签</em><strong>{tags.length}</strong></span>
-          <span><em>最新更新</em><strong>{posts[0] ? '本月' : '暂无'}</strong></span>
+      <section class="panel side-card">
+        <h2>文章索引</h2>
+        <div class="side-links">
+          <a href="/blog">全部文章</a>
+          <a href="/archive">年份归档</a>
+          <a href="/search">站内搜索</a>
         </div>
+      </section>
+
+      <section class="panel side-card">
+        <h2>热门标签</h2>
+        <div class="tag-cloud">
+          {tags.slice(0, 12).map((tag) => (
+            <a class="chip" href={`/tags/${slugifyTag(tag)}/`}>
+              {tag}
+              <small>{tagCounts[tag]}</small>
+            </a>
+          ))}
+        </div>
+      </section>
+    </aside>
+
+    <section class="blog-main">
+      <header class="panel list-header">
+        <span class="eyebrow">文章列表</span>
+        <h1>文章归档与专题索引</h1>
+        <p>这里把长期写作的内容按主题和时间组织起来。阅读页保持安静，列表页则更强调秩序与查找效率。</p>
+      </header>
+
+      <div class="section-bar">
+        <h2>精选文章</h2>
+        <a href="/archive">查看归档</a>
       </div>
 
-      <div class="sidebar-card panel">
-        <h2>推荐从这里开始</h2>
+      <div class="blog-feed">
+        {posts.map((post) => (
+          <article class="panel list-item">
+            <div class="meta-row">
+              <span>{post.data.pubDate.toLocaleDateString('zh-CN')}</span>
+              <span>{post.data.tags.join(' / ')}</span>
+            </div>
+            <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+            <p>{post.data.description}</p>
+            <div class="chips">
+              {post.data.featured && <span class="chip">精选</span>}
+              {post.data.tags.slice(0, 2).map((tag) => (
+                <span class="chip">{tag}</span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <aside class="blog-right">
+      <section class="panel side-card">
+        <h2>推荐阅读</h2>
         <div class="recommended-list">
-          {featuredPosts.slice(0, 3).map((post) => (
+          {featuredPosts.map((post) => (
             <a href={`/blog/${post.id}/`}>{post.data.title}</a>
           ))}
         </div>
-      </div>
-    </aside>
+      </section>
 
-    <div class="blog-main">
-      {posts.map((post) => (
-        <a class="list-card panel" href={`/blog/${post.id}/`}>
-          <div class="meta-row">
-            <span>{post.data.pubDate.toLocaleDateString('zh-CN')}</span>
-            <span>{post.data.tags.join(' / ')}</span>
-          </div>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.description}</p>
-          <div class="chips">
-            {post.data.featured && <span class="chip">精选</span>}
-            {post.data.tags.slice(0, 2).map((tag) => (
-              <span class="chip">{tag}</span>
-            ))}
-          </div>
-        </a>
-      ))}
-    </div>
+      <section class="panel side-card">
+        <h2>阅读提示</h2>
+        <div class="topic-list">
+          <span>文章详情页会保留目录与相关文章。</span>
+          <span>标签页适合按专题集中阅读。</span>
+          <span>站内搜索适合快速找旧文章。</span>
+        </div>
+      </section>
+    </aside>
   </section>
 </BaseLayout>
 
 <style>
-  .blog-hero {
-    padding: 34px;
-    background: linear-gradient(180deg, rgba(255, 251, 246, 0.88), rgba(250, 244, 236, 0.9));
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 260px;
+    gap: 20px;
+    align-items: start;
   }
 
-  .hero-title {
-    margin: 18px 0 0;
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(2.6rem, 5vw, 4rem);
-    line-height: 1.12;
-    letter-spacing: -0.03em;
+  .blog-sidebar,
+  .blog-right {
+    display: grid;
+    gap: 16px;
   }
 
-  .hero-copy {
-    max-width: 48rem;
-    margin: 24px 0 0;
+  .side-card {
+    padding: 18px;
+  }
+
+  .side-card h2 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+  }
+
+  .side-links,
+  .recommended-list,
+  .topic-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .side-links a,
+  .recommended-list a {
     color: var(--text-soft);
-    font-size: 1.08rem;
-    line-height: 1.9;
+    line-height: 1.75;
+  }
+
+  .side-links a:hover,
+  .recommended-list a:hover {
+    color: var(--accent);
+  }
+
+  .topic-list span {
+    color: var(--text-soft);
+    line-height: 1.8;
   }
 
   .tag-cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 26px;
+    gap: 10px;
   }
 
   .tag-cloud small {
-    opacity: 0.76;
+    opacity: 0.72;
   }
 
-  .blog-layout {
-    display: grid;
-    grid-template-columns: minmax(260px, 0.74fr) minmax(0, 1.26fr);
-    gap: 26px;
-    margin-top: 30px;
+  .list-header {
+    padding: 22px 24px;
+    margin-bottom: 16px;
   }
 
-  .blog-sidebar {
-    display: grid;
-    gap: 20px;
-    align-content: start;
+  .list-header h1 {
+    margin: 12px 0 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    line-height: 1.25;
   }
 
-  .sidebar-card {
-    padding: 24px;
+  .list-header p {
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    line-height: 1.85;
   }
 
-  .sidebar-card h2 {
-    margin: 0 0 18px;
-    font-size: 0.98rem;
-    color: #8f7057;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .sidebar-list {
-    display: grid;
-    gap: 14px;
-  }
-
-  .sidebar-list span {
+  .section-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    color: var(--text-soft);
-    font-size: 0.98rem;
+    margin-bottom: 12px;
   }
 
-  .sidebar-list em {
-    font-style: normal;
+  .section-bar h2 {
+    margin: 0;
+    font-size: 1.08rem;
   }
 
-  .sidebar-list strong {
-    color: var(--text);
+  .section-bar a {
+    color: var(--accent);
+    font-size: 0.86rem;
+    font-weight: 600;
   }
 
-  .recommended-list {
+  .blog-feed {
     display: grid;
     gap: 14px;
   }
 
-  .recommended-list a {
-    color: var(--text-soft);
-    line-height: 1.8;
+  .list-item {
+    padding: 18px 20px;
   }
 
-  .recommended-list a:hover {
-    color: var(--accent-deep);
-  }
-
-  .blog-main {
-    display: grid;
-    gap: 22px;
-  }
-
-  .list-card {
-    display: block;
-    padding: 28px;
-  }
-
-  .list-card h2 {
-    margin: 18px 0 0;
+  .list-item h3 {
+    margin: 12px 0 0;
     font-family: 'Noto Serif SC', serif;
-    font-size: 2rem;
-    line-height: 1.3;
-    letter-spacing: -0.02em;
+    font-size: 1.42rem;
+    line-height: 1.4;
   }
 
-  .list-card p {
-    margin: 18px 0 0;
+  .list-item p {
+    margin: 12px 0 0;
     color: var(--text-soft);
-    line-height: 1.88;
+    line-height: 1.84;
   }
 
   .chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 24px;
+    gap: 8px;
+    margin-top: 14px;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1100px) {
     .blog-layout {
       grid-template-columns: 1fr;
     }
-  }
 
-  @media (max-width: 720px) {
-    .blog-hero {
-      padding: 24px;
+    .blog-sidebar {
+      order: 2;
     }
 
-    .hero-title {
-      font-size: clamp(2.2rem, 10vw, 3.2rem);
+    .blog-main {
+      order: 1;
     }
 
-    .hero-copy {
-      font-size: 1rem;
-    }
-
-    .list-card {
-      padding: 22px;
-    }
-
-    .list-card h2 {
-      font-size: 1.58rem;
+    .blog-right {
+      order: 3;
     }
   }
 </style>

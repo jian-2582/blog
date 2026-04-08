@@ -1,344 +1,391 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
-import NewsletterBanner from '../components/NewsletterBanner.astro';
-import PostCard from '../components/PostCard.astro';
-import { getFeaturedPosts, getFeaturedProjects } from '../lib/content';
-import { homeSections, metrics, siteConfig } from '../data/site';
+import { getAllTags, getFeaturedPosts, getFeaturedProjects, getPublishedPosts, getTagCountMap } from '../lib/content';
+import { siteConfig } from '../data/site';
+import { slugifyTag } from '../lib/format';
 
-const featuredPosts = await getFeaturedPosts();
-const featuredProjects = await getFeaturedProjects(2);
+const posts = await getPublishedPosts();
+const featuredPosts = await getFeaturedPosts(5);
+const featuredLead = featuredPosts[0];
+const featuredRest = featuredPosts.slice(1);
+const latestPosts = posts.slice(0, 8);
+const projects = await getFeaturedProjects(3);
+const tags = getAllTags(posts).slice(0, 10);
+const tagCounts = getTagCountMap(posts);
 ---
 
 <BaseLayout>
-  <section class="home-hero">
-    <div class="home-hero-main">
-      <span class="eyebrow">站点首页</span>
-      <h1 class="home-title">把人工智能、自动化与个人网站，做成一座长期在线的个人工作台</h1>
-      <p class="home-copy">{siteConfig.intro}</p>
-      <div class="home-actions">
-        <a class="button button-primary" href="/blog">查看文章</a>
-        <a class="button button-secondary" href="/projects">浏览项目</a>
-      </div>
+  <section class="home-toolbar panel">
+    <div class="toolbar-left">
+      <a class="toolbar-pill is-active" href="/">推荐</a>
+      <a class="toolbar-pill" href="/blog">最新文章</a>
+      <a class="toolbar-pill" href="/archive">文章归档</a>
+      <a class="toolbar-pill" href="/projects">项目记录</a>
+    </div>
+    <div class="toolbar-note">持续记录人工智能工具、自动化流程与个人网站实践</div>
+  </section>
+
+  <section class="home-layout">
+    <aside class="left-column">
+      <section class="panel side-card">
+        <h2>站点导航</h2>
+        <div class="side-links">
+          <a href="/blog">全部文章</a>
+          <a href="/projects">项目记录</a>
+          <a href="/archive">年份归档</a>
+          <a href="/about">关于作者</a>
+          <a href="/search">站内搜索</a>
+        </div>
+      </section>
+
+      <section class="panel side-card">
+        <h2>关注主题</h2>
+        <div class="topic-list">
+          <span>人工智能工具的真实使用</span>
+          <span>自动化流程与效率提升</span>
+          <span>网站搭建与部署记录</span>
+          <span>从想法到上线的项目过程</span>
+        </div>
+      </section>
+
+      <section class="panel side-card">
+        <h2>常用标签</h2>
+        <div class="tag-cloud">
+          {tags.map((tag) => (
+            <a class="chip" href={`/tags/${slugifyTag(tag)}/`}>
+              {tag}
+              <small>{tagCounts[tag]}</small>
+            </a>
+          ))}
+        </div>
+      </section>
+    </aside>
+
+    <div class="main-column">
+      <section class="panel featured-panel">
+        <span class="eyebrow">推荐阅读</span>
+        <h1>{featuredLead?.data.title ?? '欢迎来到这座站'}</h1>
+        <p>{featuredLead?.data.description ?? siteConfig.intro}</p>
+        {featuredLead && (
+          <div class="featured-actions">
+            <a class="button button-primary" href={`/blog/${featuredLead.id}/`}>继续阅读</a>
+            <a class="button button-secondary" href="/blog">查看全部文章</a>
+          </div>
+        )}
+      </section>
+
+      <section class="feed-section">
+        <div class="section-bar">
+          <h2>精选文章</h2>
+          <a href="/blog">更多文章</a>
+        </div>
+
+        <div class="post-feed">
+          {featuredLead && (
+            <article class="feed-item feed-item-large panel">
+              <div class="meta-row">
+                <span>{featuredLead.data.pubDate.toLocaleDateString('zh-CN')}</span>
+                <span>{featuredLead.data.tags.join(' / ')}</span>
+              </div>
+              <h3><a href={`/blog/${featuredLead.id}/`}>{featuredLead.data.title}</a></h3>
+              <p>{featuredLead.data.description}</p>
+              <div class="chips">
+                {featuredLead.data.tags.slice(0, 3).map((tag) => (
+                  <span class="chip">{tag}</span>
+                ))}
+              </div>
+            </article>
+          )}
+
+          {featuredRest.map((post) => (
+            <article class="feed-item panel">
+              <div class="meta-row">
+                <span>{post.data.pubDate.toLocaleDateString('zh-CN')}</span>
+                <span>{post.data.tags.join(' / ')}</span>
+              </div>
+              <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+              <p>{post.data.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="feed-section">
+        <div class="section-bar">
+          <h2>最近更新</h2>
+          <a href="/archive">查看归档</a>
+        </div>
+        <div class="timeline panel">
+          {latestPosts.map((post) => (
+            <a href={`/blog/${post.id}/`} class="timeline-item">
+              <strong>{post.data.title}</strong>
+              <span>{post.data.description}</span>
+              <small>{post.data.pubDate.toLocaleDateString('zh-CN')}</small>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
 
-    <aside class="home-side panel">
-      <div class="metric-stack">
-        {metrics.map((item) => (
-          <article class="metric-card">
-            <small>{item.label}</small>
-            <strong>{item.value}</strong>
-          </article>
-        ))}
-      </div>
-      <div class="home-side-copy">
-        <p>视觉基调</p>
-        <strong>编辑部感 + 个人工作台气质</strong>
-      </div>
+    <aside class="right-column">
+      <section class="panel side-card author-card">
+        <h2>关于作者</h2>
+        <p>{siteConfig.intro}</p>
+        <a class="button button-secondary" href="/about">了解更多</a>
+      </section>
+
+      <section class="panel side-card">
+        <h2>项目动态</h2>
+        <div class="project-list">
+          {projects.map((project) => (
+            <a href={`/projects/${project.id}/`}>
+              <strong>{project.data.title}</strong>
+              <span>{project.data.summary}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="panel side-card">
+        <h2>订阅与联系</h2>
+        <div class="side-links">
+          <a href="/rss.xml">订阅更新</a>
+          <a href="mailto:hi@usgpt.us">邮件联系</a>
+          <a href="/search">站内搜索</a>
+        </div>
+      </section>
     </aside>
   </section>
-
-  <section class="section">
-    <span class="eyebrow">当前关注</span>
-    <div class="focus-grid">
-      {homeSections.map((item) => (
-        <article class="focus-card panel">
-          <strong>{item.eyebrow}</strong>
-          <h2>{item.title}</h2>
-          <p>{item.description}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">精选文章</span>
-        <h2 class="section-title">先从这几篇开始认识这座站</h2>
-        <p class="section-copy">卡片布局保留明显主次和更强的阅读节奏，让首页看起来像一张有编辑判断的封面。</p>
-      </div>
-      <a class="ghost-pill" href="/blog">查看全部文章</a>
-    </div>
-    <div class="home-post-grid">
-      {featuredPosts.map((post) => <PostCard post={post} />)}
-    </div>
-  </section>
-
-  <section class="section project-stage">
-    <div class="section-head project-head">
-      <div>
-        <span class="eyebrow">项目</span>
-        <h2 class="section-title">文章之外，我也会把东西真正做出来</h2>
-        <p class="section-copy">这里采用工作台式排版，让项目区看起来更像一张正在推进中的桌面，而不是普通卡片堆砌。</p>
-      </div>
-    </div>
-    <div class="project-lanes">
-      {featuredProjects.map((project) => (
-        <a class="project-lane panel" href={`/projects/${project.id}/`}>
-          <strong>{project.data.status}</strong>
-          <h3>{project.data.title}</h3>
-          <p>{project.data.summary}</p>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <NewsletterBanner />
 </BaseLayout>
 
 <style>
-  .section {
-    margin-top: 86px;
-  }
-
-  .home-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
-    gap: 34px;
-    align-items: stretch;
-  }
-
-  .home-hero-main {
-    padding: 14px 0 0 6px;
-  }
-
-  .home-title {
-    margin: 24px 0 0;
-    max-width: 10.5ch;
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(3rem, 5.8vw, 4.5rem);
-    line-height: 1.12;
-    letter-spacing: -0.03em;
-  }
-
-  .home-copy {
-    max-width: 40rem;
-    margin: 30px 0 0;
-    color: var(--text-soft);
-    font-size: 1.18rem;
-    line-height: 1.92;
-  }
-
-  .home-actions {
+  .home-toolbar {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 34px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    background: var(--panel-soft);
   }
 
-  .home-side {
-    position: relative;
-    min-height: 430px;
-    padding: 32px;
-    background: linear-gradient(180deg, #f7efe6 0%, #f2e7da 100%);
-    overflow: hidden;
+  .toolbar-left {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
-  .home-side::before {
-    content: '';
-    position: absolute;
-    inset: 26px auto auto 28px;
-    width: 170px;
-    height: 170px;
+  .toolbar-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 14px;
     border-radius: 999px;
-    background: rgba(194, 146, 102, 0.16);
+    color: var(--text-soft);
+    font-size: 0.84rem;
+    font-weight: 600;
   }
 
-  .home-side::after {
-    content: '';
-    position: absolute;
-    right: -38px;
-    bottom: 14px;
-    width: 240px;
-    height: 240px;
-    border-radius: 999px;
-    border: 2px solid rgba(123, 86, 54, 0.14);
+  .toolbar-pill.is-active,
+  .toolbar-pill:hover {
+    background: #fff;
+    color: var(--accent);
   }
 
-  .metric-stack {
-    position: absolute;
-    right: 28px;
-    top: 32px;
+  .toolbar-note {
+    color: var(--text-soft);
+    font-size: 0.86rem;
+  }
+
+  .home-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr) 290px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .left-column,
+  .right-column {
+    display: grid;
+    gap: 16px;
+  }
+
+  .side-card {
+    padding: 18px;
+  }
+
+  .side-card h2 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+  }
+
+  .side-links,
+  .topic-list,
+  .project-list {
     display: grid;
     gap: 12px;
   }
 
-  .metric-card {
-    width: 138px;
-    padding: 14px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(224, 205, 184, 0.82);
+  .side-links a,
+  .project-list a {
+    color: var(--text-soft);
+    line-height: 1.75;
   }
 
-  .metric-card small {
-    display: block;
-    margin-bottom: 6px;
-    color: #8a7764;
-    font-size: 0.75rem;
+  .side-links a:hover,
+  .project-list a:hover {
+    color: var(--accent);
   }
 
-  .metric-card strong {
-    font-size: 1.06rem;
+  .topic-list span {
+    color: var(--text-soft);
+    line-height: 1.75;
   }
 
-  .home-side-copy {
-    position: absolute;
-    left: 30px;
-    bottom: 28px;
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
-  .home-side-copy p {
-    margin: 0;
-    color: #8d7662;
-    font-size: 0.92rem;
+  .tag-cloud small {
+    opacity: 0.72;
   }
 
-  .home-side-copy strong {
-    display: block;
-    max-width: 15ch;
-    margin-top: 12px;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 2.05rem;
-    line-height: 1.24;
-  }
-
-  .focus-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
-    margin-top: 28px;
-  }
-
-  .focus-card {
-    min-height: 250px;
-    padding: 28px;
-  }
-
-  .focus-card strong {
-    display: block;
+  .featured-panel {
+    padding: 24px;
     margin-bottom: 18px;
-    color: #90735b;
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
   }
 
-  .focus-card h2 {
-    margin: 0;
+  .featured-panel h1 {
+    margin: 14px 0 0;
     font-family: 'Noto Serif SC', serif;
-    font-size: 2rem;
-    line-height: 1.28;
-    letter-spacing: -0.02em;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.25;
   }
 
-  .focus-card p {
-    margin: 18px 0 0;
+  .featured-panel p {
+    margin: 16px 0 0;
     color: var(--text-soft);
     line-height: 1.9;
   }
 
-  .ghost-pill {
-    align-self: flex-end;
+  .featured-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
   }
 
-  .home-post-grid {
-    display: grid;
-    grid-template-columns: 1.06fr 1fr 0.94fr;
-    gap: 22px;
-    margin-top: 28px;
+  .feed-section {
+    margin-top: 18px;
   }
 
-  .project-stage {
-    padding: 34px;
-    border-radius: 34px;
-    background: linear-gradient(180deg, #f0e7dc 0%, #ece0d1 100%);
-    border: 1px solid rgba(223, 203, 184, 0.94);
+  .section-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
   }
 
-  .project-head {
-    margin-bottom: 28px;
-  }
-
-  .project-lanes {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-
-  .project-lane {
-    display: block;
-    padding: 24px;
-    border-radius: 24px;
-  }
-
-  .project-lane strong {
-    display: block;
-    margin-bottom: 10px;
-    color: #90735b;
-    font-size: 0.88rem;
-  }
-
-  .project-lane h3 {
-    margin: 0 0 10px;
-    font-size: 1.72rem;
-  }
-
-  .project-lane p {
+  .section-bar h2 {
     margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .section-bar a {
+    color: var(--accent);
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  .post-feed {
+    display: grid;
+    gap: 14px;
+  }
+
+  .feed-item {
+    padding: 18px 20px;
+  }
+
+  .feed-item h3 {
+    margin: 12px 0 0;
+    font-size: 1.45rem;
+  }
+
+  .feed-item p {
+    margin: 12px 0 0;
     color: var(--text-soft);
-    line-height: 1.82;
+    line-height: 1.84;
+  }
+
+  .feed-item-large h3 {
+    font-size: 1.7rem;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .timeline {
+    padding: 6px 20px;
+  }
+
+  .timeline-item {
+    display: grid;
+    gap: 8px;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .timeline-item:first-child {
+    border-top: 0;
+  }
+
+  .timeline-item span,
+  .timeline-item small {
+    color: var(--text-soft);
+    line-height: 1.8;
+  }
+
+  .author-card p {
+    margin: 0 0 14px;
+    color: var(--text-soft);
+    line-height: 1.85;
+  }
+
+  .project-list strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .project-list span {
+    color: var(--text-soft);
+    line-height: 1.75;
   }
 
   @media (max-width: 1100px) {
-    .home-hero,
-    .home-post-grid,
-    .focus-grid,
-    .project-lanes {
+    .home-layout {
       grid-template-columns: 1fr;
     }
 
-    .home-side {
-      min-height: 360px;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .section {
-      margin-top: 54px;
+    .left-column {
+      order: 2;
     }
 
-    .home-hero-main {
-      padding-left: 0;
+    .main-column {
+      order: 1;
     }
 
-    .home-title {
-      max-width: none;
-      font-size: clamp(2.45rem, 11vw, 3.4rem);
-    }
-
-    .home-copy {
-      font-size: 1rem;
-      line-height: 1.9;
-    }
-
-    .home-side {
-      min-height: 320px;
-      padding: 24px;
-    }
-
-    .metric-stack {
-      right: 20px;
-      top: 20px;
-    }
-
-    .metric-card {
-      width: 124px;
-    }
-
-    .project-stage {
-      padding: 24px;
+    .right-column {
+      order: 3;
     }
   }
 </style>
