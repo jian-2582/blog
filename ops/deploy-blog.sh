@@ -8,20 +8,20 @@ CURRENT_LINK=/srv/www/site/current
 KEEP_RELEASES=5
 BRANCH=main
 REMOTE=origin
-SSH_KEY=/root/.ssh/blog_github_ed25519
+REPO_URL=https://github.com/jian-2582/blog.git
 
 exec 9>"$LOCK_FILE"
 flock -n 9 || exit 0
 
 export PATH="/usr/local/bin:/usr/bin:/bin"
-export GIT_SSH_COMMAND="ssh -i ${SSH_KEY} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
 
 if [ ! -d "${REPO_DIR}/.git" ]; then
   mkdir -p "$(dirname "${REPO_DIR}")"
-  git clone git@github.com:jian-2582/blog.git "${REPO_DIR}"
+  git clone "${REPO_URL}" "${REPO_DIR}"
 fi
 
 cd "${REPO_DIR}"
+git remote set-url "${REMOTE}" "${REPO_URL}"
 git fetch "${REMOTE}" "${BRANCH}"
 
 LOCAL_REV="$(git rev-parse HEAD 2>/dev/null || true)"
