@@ -77,18 +77,6 @@ const ogImage = new URL(image, siteConfig.siteUrl).toString();
       </div>
     </main>
 
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>{siteConfig.title} · 持续记录人工智能、自动化与个人网站实践</p>
-        <div class="footer-links">
-          {siteConfig.social.map((item) => (
-            <a href={item.href} target="_blank" rel="noreferrer">{item.label}</a>
-          ))}
-          <a href="/rss.xml">订阅更新</a>
-        </div>
-      </div>
-    </footer>
-
     <Analytics />
     <slot name="scripts" />
   </body>
@@ -229,37 +217,7 @@ const ogImage = new URL(image, siteConfig.siteUrl).toString();
   }
 
   .site-main {
-    padding: 22px 0 44px;
-  }
-
-  .site-footer {
-    border-top: 1px solid var(--line);
-    background: #fff;
-  }
-
-  .footer-inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    min-height: 68px;
-    color: var(--text-soft);
-    font-size: 0.92rem;
-  }
-
-  .footer-inner p {
-    margin: 0;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .footer-links a:hover {
-    color: var(--accent);
+    padding: 22px 0 60px;
   }
 
   .eyebrow {
@@ -443,12 +401,7 @@ const ogImage = new URL(image, siteConfig.siteUrl).toString();
     }
 
     .site-main {
-      padding: 16px 0 30px;
-    }
-
-    .footer-inner {
-      padding: 14px 0;
-      align-items: flex-start;
+      padding: 16px 0 36px;
     }
 
     .card-link {
