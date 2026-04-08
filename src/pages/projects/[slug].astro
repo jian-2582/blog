@@ -1,0 +1,95 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../components/BaseLayout.astro';
+import { getProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout
+  title={`${project.data.title} | 刘强的博客`}
+  description={project.data.summary}
+  currentPath={`/projects/${project.id}/`}
+>
+  <article class="container project-shell">
+    <header class="panel project-hero">
+      <span class="eyebrow">项目</span>
+      <h1>{project.data.title}</h1>
+      <p>{project.data.summary}</p>
+      <div class="meta-row">
+        <span>{project.data.year}</span>
+        <span>{project.data.status}</span>
+      </div>
+      <div class="chip-row">
+        {project.data.stack.map((item) => <span class="chip">{item}</span>)}
+      </div>
+    </header>
+
+    <div class="two-column project-grid">
+      <section class="panel project-main">
+        <div class="prose">
+          <Content />
+        </div>
+      </section>
+
+      <aside class="project-side">
+        <section class="panel side-card">
+          <span class="eyebrow">链接</span>
+          <div class="side-links">
+            {project.data.demo && <a href={project.data.demo} target="_blank" rel="noreferrer">在线访问</a>}
+            {project.data.repo && <a href={project.data.repo} target="_blank" rel="noreferrer">源码仓库</a>}
+          </div>
+        </section>
+      </aside>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-shell {
+    display: grid;
+    gap: 24px;
+  }
+
+  .project-hero,
+  .project-main,
+  .side-card {
+    padding: 30px;
+  }
+
+  .project-hero h1 {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    line-height: 1.15;
+  }
+
+  .project-hero p {
+    max-width: 44rem;
+    margin: 18px 0 0;
+    color: var(--text-soft);
+    line-height: 1.9;
+  }
+
+  .chip-row,
+  .side-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .side-links a {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.68);
+  }
+</style>

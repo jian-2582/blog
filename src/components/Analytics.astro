@@ -1,0 +1,16 @@
+---
+const scriptUrl = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL;
+const websiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+const enabled = Boolean(scriptUrl && websiteId);
+---
+
+{
+  enabled && (
+    <script
+      defer
+      src={scriptUrl}
+      data-website-id={websiteId}
+      data-domains="usgpt.us,www.usgpt.us"
+    ></script>
+  )
+}

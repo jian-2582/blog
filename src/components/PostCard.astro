@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../lib/format';
+import { getReadingMinutes } from '../lib/content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const readingMinutes = getReadingMinutes(post);
+---
+
+<a class="card-link" href={`/blog/${post.id}/`}>
+  <div class="meta-row">
+    <span>{formatDate(post.data.pubDate)}</span>
+    <span>{readingMinutes} 分钟阅读</span>
+  </div>
+  <h3>{post.data.title}</h3>
+  <p>{post.data.description}</p>
+  <div class="tag-row">
+    {post.data.tags.slice(0, 3).map((tag) => (
+      <span class="chip">
+        <span>#</span>
+        <span>{tag}</span>
+      </span>
+    ))}
+  </div>
+</a>
+
+<style>
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

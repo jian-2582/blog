@@ -1,11 +1,153 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../components/BaseLayout.astro';
+import NewsletterBanner from '../components/NewsletterBanner.astro';
+import PageHero from '../components/PageHero.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getFeaturedPosts, getFeaturedProjects, getPublishedPosts } from '../lib/content';
+import { homeSections, metrics, siteConfig } from '../data/site';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const featuredPosts = await getFeaturedPosts();
+const latestPosts = (await getPublishedPosts()).slice(0, 4);
+const featuredProjects = await getFeaturedProjects();
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout>
+  <PageHero
+    eyebrow="中文个人站"
+    title="把技术、思考与长期积累，整理成一座耐读的网站"
+    description={siteConfig.intro}
+    actions={[
+      { href: '/blog', label: '开始阅读' },
+      { href: '/about', label: '了解我', variant: 'secondary' },
+    ]}
+    aside={metrics}
+  />
+
+  <section class="container home-grid">
+    <div class="home-intro grid">
+      {homeSections.map((item) => (
+        <article class="panel feature-card">
+          <span class="eyebrow">{item.eyebrow}</span>
+          <h2>{item.title}</h2>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container section-block">
+    <span class="eyebrow">精选文章</span>
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">最近值得先读的几篇</h2>
+        <p class="section-copy">优先展示那些更能代表这座站点写作方向的文章：有方法、有结构，也有观点。</p>
+      </div>
+      <a class="button button-secondary" href="/blog">查看全部文章</a>
+    </div>
+    <div class="post-grid">
+      {featuredPosts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="container section-block">
+    <span class="eyebrow">项目</span>
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">写作之外，我也把想法做成产品</h2>
+        <p class="section-copy">项目页会持续记录正在推进的工具、站点和工作流实验。</p>
+      </div>
+      <a class="button button-secondary" href="/projects">浏览项目</a>
+    </div>
+    <div class="project-grid">
+      {featuredProjects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <section class="container section-block">
+    <span class="eyebrow">最近更新</span>
+    <div class="timeline panel">
+      {latestPosts.map((post) => (
+        <a href={`/blog/${post.id}/`} class="timeline-item">
+          <strong>{post.data.title}</strong>
+          <span>{post.data.description}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <NewsletterBanner />
+</BaseLayout>
+
+<style>
+  .home-grid,
+  .section-block {
+    margin-top: 26px;
+  }
+
+  .home-intro {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .feature-card {
+    padding: 28px;
+  }
+
+  .feature-card h2 {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.45rem;
+    line-height: 1.4;
+  }
+
+  .feature-card p {
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    line-height: 1.9;
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .post-grid,
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .timeline {
+    display: grid;
+    padding: 12px 24px;
+  }
+
+  .timeline-item {
+    display: grid;
+    gap: 8px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .timeline-item:first-child {
+    border-top: 0;
+  }
+
+  .timeline-item span {
+    color: var(--text-soft);
+    line-height: 1.85;
+  }
+
+  @media (max-width: 960px) {
+    .home-intro,
+    .post-grid,
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

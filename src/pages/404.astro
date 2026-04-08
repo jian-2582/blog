@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+---
+
+<BaseLayout title="页面不存在 | 刘强的博客" description="你访问的页面不存在">
+  <section class="container panel not-found">
+    <span class="eyebrow">404</span>
+    <h1>这页似乎已经离开了当前路径</h1>
+    <p>你可以回到首页继续浏览，或者直接使用站内搜索查找文章与项目。</p>
+    <div class="actions">
+      <a class="button button-primary" href="/">返回首页</a>
+      <a class="button button-secondary" href="/search">去搜索</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    gap: 18px;
+    padding: 42px;
+    margin-top: 24px;
+  }
+
+  .not-found h1 {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+  }
+
+  .not-found p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.9;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+---
+
+<a class="card-link" href={`/projects/${project.id}/`}>
+  <div class="meta-row">
+    <span>{project.data.year}</span>
+    <span>{project.data.status}</span>
+  </div>
+  <h3>{project.data.title}</h3>
+  <p>{project.data.summary}</p>
+  <div class="stack-row">
+    {project.data.stack.map((item) => (
+      <span class="chip">{item}</span>
+    ))}
+  </div>
+</a>
+
+<style>
+  .stack-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

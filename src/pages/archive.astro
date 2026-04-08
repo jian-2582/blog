@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getArchiveGroups, getPublishedPosts } from '../lib/content';
+import { formatDate } from '../lib/format';
+
+const posts = await getPublishedPosts();
+const groups = getArchiveGroups(posts);
+---
+
+<BaseLayout title="归档 | 刘强的博客" description="按年份查看文章归档" currentPath="/archive">
+  <PageHero
+    eyebrow="归档"
+    title="按时间回看这座站点的生长轨迹"
+    description="把文章按年份归档，方便集中翻找某一阶段写过的主题与思路。"
+  />
+
+  <section class="container archive-list">
+    {Object.entries(groups).map(([year, entries]) => (
+      <section class="panel archive-year">
+        <h2>{year}</h2>
+        <div class="year-list">
+          {entries.map((post) => (
+            <a href={`/blog/${post.id}/`}>
+              <strong>{post.data.title}</strong>
+              <span>{formatDate(post.data.pubDate)}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-list {
+    display: grid;
+    gap: 22px;
+    margin-top: 24px;
+  }
+
+  .archive-year {
+    padding: 28px;
+  }
+
+  .archive-year h2 {
+    margin: 0 0 18px;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .year-list {
+    display: grid;
+  }
+
+  .year-list a {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .year-list a:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .year-list span {
+    color: var(--text-soft);
+  }
+</style>

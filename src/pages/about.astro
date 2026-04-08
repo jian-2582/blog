@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { siteConfig } from '../data/site';
+---
+
+<BaseLayout title="关于 | 刘强的博客" description="关于这座站点与作者" currentPath="/about">
+  <PageHero
+    eyebrow="关于"
+    title="把个人网站做成一座真正能积累价值的内容资产"
+    description={`${siteConfig.title} 关注的不是短期流量，而是长期可读、可搜、可复用的中文内容。`}
+    aside={[
+      { label: '写作方向', value: 'AI / 产品 / 技术' },
+      { label: '站点原则', value: '长期、清晰、可复用' },
+    ]}
+  />
+
+  <section class="container two-column about-grid">
+    <article class="panel about-main">
+      <div class="prose">
+        <p>
+          这座网站既是博客，也是个人品牌站点。它会同时承载文章、项目、工作流与持续更新的长期主题。
+        </p>
+        <p>
+          我更在意内容是否清楚、是否能复用、是否经得起几个月之后再看，而不是只追求发布当下的热度。
+        </p>
+        <p>
+          如果你也对 AI 工具、内容工作流、产品思考、独立建站或者长期主义感兴趣，这里应该会有不少值得翻的东西。
+        </p>
+      </div>
+    </article>
+
+    <aside class="about-side">
+      <section class="panel side-card">
+        <span class="eyebrow">你会看到什么</span>
+        <ul>
+          <li>从零到上线的实操记录</li>
+          <li>产品与工具的拆解方法</li>
+          <li>写作与内容系统搭建经验</li>
+          <li>AI 工具在真实工作流中的落地</li>
+        </ul>
+      </section>
+
+      <section class="panel side-card">
+        <span class="eyebrow">联系方式</span>
+        <p>如需交流合作，可发邮件到 <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
+      </section>
+    </aside>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-grid {
+    margin-top: 24px;
+    align-items: start;
+  }
+
+  .about-main,
+  .side-card {
+    padding: 28px;
+  }
+
+  .about-side {
+    display: grid;
+    gap: 18px;
+  }
+
+  .side-card ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    line-height: 2;
+    color: var(--text-soft);
+  }
+
+  .side-card p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.9;
+  }
+</style>

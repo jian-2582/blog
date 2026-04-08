@@ -1,0 +1,509 @@
+---
+import '@fontsource/noto-sans-sc/400.css';
+import '@fontsource/noto-sans-sc/500.css';
+import '@fontsource/noto-sans-sc/700.css';
+import '@fontsource/noto-serif-sc/700.css';
+import Analytics from './Analytics.astro';
+import { siteConfig } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  currentPath?: string;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  image = siteConfig.seo.defaultOg,
+  currentPath = Astro.url.pathname,
+} = Astro.props;
+
+const canonical = new URL(currentPath, siteConfig.siteUrl).toString();
+const ogImage = new URL(image, siteConfig.siteUrl).toString();
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#f3ece3" />
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="shell">
+      <div class="backdrop backdrop-left"></div>
+      <div class="backdrop backdrop-right"></div>
+      <header class="site-header container">
+        <a class="brand" href="/">
+          <span class="brand-mark">L</span>
+          <span class="brand-text">
+            <strong>{siteConfig.title}</strong>
+            <small>精致中文个人站</small>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="主导航">
+          {
+            siteConfig.navigation.map((item) => (
+              <a class:list={[Astro.url.pathname === item.href && 'is-active']} href={item.href}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="site-footer container">
+        <div>
+          <p class="footer-title">{siteConfig.title}</p>
+          <p class="footer-copy">{siteConfig.intro}</p>
+        </div>
+        <div class="footer-links">
+          {siteConfig.social.map((item) => (
+            <a href={item.href} target="_blank" rel="noreferrer">{item.label}</a>
+          ))}
+          <a href="/rss.xml">RSS</a>
+        </div>
+      </footer>
+    </div>
+    <Analytics />
+    <slot name="scripts" />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light;
+    --bg: #f6f0e7;
+    --panel: rgba(255, 250, 244, 0.82);
+    --panel-strong: rgba(255, 248, 240, 0.96);
+    --line: rgba(93, 68, 38, 0.14);
+    --line-strong: rgba(93, 68, 38, 0.22);
+    --text: #24170e;
+    --text-soft: rgba(36, 23, 14, 0.72);
+    --accent: #9d5f2f;
+    --accent-deep: #713913;
+    --accent-soft: rgba(157, 95, 47, 0.12);
+    --shadow: 0 22px 72px rgba(74, 46, 18, 0.12);
+    --radius-xl: 30px;
+    --radius-lg: 22px;
+    --radius-md: 18px;
+    --container: min(1180px, calc(100vw - 40px));
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(187, 123, 72, 0.18), transparent 28%),
+      radial-gradient(circle at 84% 10%, rgba(120, 83, 36, 0.14), transparent 18%),
+      linear-gradient(180deg, #f3ece3 0%, #f8f4ee 40%, #f6f0e7 100%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  .shell {
+    position: relative;
+    overflow: clip;
+    min-height: 100vh;
+  }
+
+  .backdrop {
+    position: fixed;
+    z-index: -1;
+    border-radius: 999px;
+    filter: blur(16px);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .backdrop-left {
+    top: 120px;
+    left: -120px;
+    width: 280px;
+    height: 280px;
+    background: rgba(216, 171, 132, 0.32);
+  }
+
+  .backdrop-right {
+    top: 300px;
+    right: -120px;
+    width: 340px;
+    height: 340px;
+    background: rgba(164, 106, 57, 0.2);
+  }
+
+  .container {
+    width: var(--container);
+    margin: 0 auto;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 18px;
+    padding: 14px 18px;
+    backdrop-filter: blur(18px);
+    background: rgba(255, 249, 242, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    border-radius: 999px;
+    box-shadow: 0 8px 30px rgba(88, 57, 25, 0.08);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #c57b45, #8b4820);
+    color: white;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.2rem;
+    box-shadow: 0 12px 28px rgba(130, 75, 24, 0.24);
+  }
+
+  .brand-text {
+    display: grid;
+    gap: 2px;
+  }
+
+  .brand-text strong {
+    font-size: 0.98rem;
+    letter-spacing: 0.04em;
+  }
+
+  .brand-text small {
+    color: var(--text-soft);
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .site-nav a {
+    padding: 10px 14px;
+    border-radius: 999px;
+    color: var(--text-soft);
+    transition: 200ms ease;
+  }
+
+  .site-nav a:hover,
+  .site-nav a.is-active {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  main {
+    padding: 36px 0 64px;
+  }
+
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 0 42px;
+    color: var(--text-soft);
+  }
+
+  .footer-title {
+    margin: 0 0 8px;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .footer-copy {
+    margin: 0;
+    max-width: 42rem;
+    line-height: 1.8;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent-deep);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--accent-deep);
+    font-size: 0.92rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .section-title {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.8rem, 2vw, 2.5rem);
+    line-height: 1.2;
+  }
+
+  .section-copy {
+    max-width: 44rem;
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    line-height: 1.9;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(20px);
+  }
+
+  .grid {
+    display: grid;
+    gap: 22px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 0.92rem;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 18px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: 180ms ease;
+  }
+
+  .button-primary {
+    color: white;
+    background: linear-gradient(135deg, #c57b45, #8d4b22);
+    box-shadow: 0 14px 32px rgba(145, 79, 28, 0.22);
+  }
+
+  .button-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .button-secondary {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: var(--line);
+  }
+
+  .button-secondary:hover {
+    border-color: var(--line-strong);
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .card-link {
+    display: grid;
+    gap: 18px;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    background: var(--panel-strong);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .card-link:hover {
+    transform: translateY(-2px);
+    border-color: rgba(157, 95, 47, 0.28);
+    box-shadow: 0 18px 36px rgba(75, 43, 16, 0.1);
+  }
+
+  .card-link h3,
+  .card-link h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.45;
+  }
+
+  .card-link p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.85;
+  }
+
+  .hero-surface {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(30px, 5vw, 56px);
+  }
+
+  .hero-surface::after {
+    content: '';
+    position: absolute;
+    inset: auto -12% -35% auto;
+    width: 280px;
+    height: 280px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(197, 123, 69, 0.28), transparent 60%);
+    pointer-events: none;
+  }
+
+  .prose {
+    color: var(--text);
+    line-height: 1.95;
+    font-size: 1.04rem;
+  }
+
+  .prose h2,
+  .prose h3 {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.35;
+    margin-top: 2.4rem;
+  }
+
+  .prose p,
+  .prose ul,
+  .prose ol,
+  .prose blockquote {
+    margin: 1.1rem 0;
+  }
+
+  .prose code {
+    padding: 0.14rem 0.4rem;
+    border-radius: 8px;
+    background: rgba(116, 82, 42, 0.08);
+    font-size: 0.9em;
+  }
+
+  .prose pre {
+    overflow-x: auto;
+    padding: 1.2rem;
+    border-radius: 20px;
+    background: #2d2018;
+    color: #f7efe8;
+  }
+
+  .prose blockquote {
+    padding: 1px 0 1px 18px;
+    border-left: 3px solid rgba(157, 95, 47, 0.35);
+    color: var(--text-soft);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.4rem;
+  }
+
+  .two-column {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 960px) {
+    .site-header {
+      position: static;
+      flex-direction: column;
+      align-items: stretch;
+      border-radius: 28px;
+    }
+
+    .two-column {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    :root {
+      --container: min(100vw - 24px, 1180px);
+      --radius-xl: 24px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+    }
+
+    main {
+      padding-top: 22px;
+    }
+
+    .site-nav {
+      justify-content: flex-start;
+    }
+  }
+</style>

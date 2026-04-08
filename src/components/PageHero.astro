@@ -1,0 +1,108 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  actions?: { href: string; label: string; variant?: 'primary' | 'secondary' }[];
+  aside?: { label: string; value: string }[];
+}
+
+const { eyebrow, title, description, actions = [], aside = [] } = Astro.props;
+---
+
+<section class="container panel hero-surface hero-grid">
+  <div>
+    <span class="eyebrow">{eyebrow}</span>
+    <h1 class="hero-title">{title}</h1>
+    <p class="hero-copy">{description}</p>
+    {
+      actions.length > 0 && (
+        <div class="hero-actions">
+          {actions.map((action) => (
+            <a
+              class:list={[
+                'button',
+                action.variant === 'secondary' ? 'button-secondary' : 'button-primary',
+              ]}
+              href={action.href}
+            >
+              {action.label}
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+  {
+    aside.length > 0 && (
+      <div class="hero-aside">
+        {aside.map((item) => (
+          <article class="hero-stat">
+            <small>{item.label}</small>
+            <strong>{item.value}</strong>
+          </article>
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 30px;
+    align-items: center;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2.5rem, 5vw, 4.8rem);
+    line-height: 1.06;
+    max-width: 12ch;
+  }
+
+  .hero-copy {
+    max-width: 42rem;
+    margin: 18px 0 0;
+    color: var(--text-soft);
+    font-size: 1.05rem;
+    line-height: 1.95;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .hero-aside {
+    display: grid;
+    gap: 14px;
+  }
+
+  .hero-stat {
+    padding: 20px 22px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+  }
+
+  .hero-stat small {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-soft);
+  }
+
+  .hero-stat strong {
+    font-size: 1.08rem;
+  }
+
+  @media (max-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

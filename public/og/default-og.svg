@@ -1,0 +1,9 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="40" fill="#F5EEE5"/>
+  <circle cx="160" cy="110" r="120" fill="#D8B18C" fill-opacity="0.45"/>
+  <circle cx="1050" cy="510" r="160" fill="#B87847" fill-opacity="0.28"/>
+  <rect x="78" y="82" width="1044" height="466" rx="36" fill="white" fill-opacity="0.56"/>
+  <text x="110" y="220" fill="#7A4320" font-size="36" font-family="Noto Sans SC, sans-serif" letter-spacing="10">LIU QIANG</text>
+  <text x="110" y="330" fill="#23170E" font-size="84" font-family="Noto Serif SC, serif">刘强的博客</text>
+  <text x="110" y="412" fill="#6F5A49" font-size="34" font-family="Noto Sans SC, sans-serif">记录 AI、编程、产品、写作与长期主义的中文个人站点</text>
+</svg>
