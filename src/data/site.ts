@@ -1,9 +1,9 @@
 export const siteConfig = {
-  title: '刘强的博客',
-  description: '记录 AI、编程、产品、写作与长期主义的中文个人站点。',
+  title: '刘强 | usgpt.us',
+  description: '一个持续记录 AI 工具、自动化流程、个人网站与独立产品实践的中文站点。',
   siteUrl: 'https://usgpt.us',
   author: '刘强',
-  intro: '把经验写清楚，把想法做出来，把长期有价值的东西留下来。',
+  intro: '这里写我正在做的事：AI 工具、自动化流程、个人网站，以及把想法做成可用产品的过程。',
   email: 'hi@usgpt.us',
   navigation: [
     { href: '/', label: '首页' },
@@ -20,28 +20,28 @@ export const siteConfig = {
 } as const;
 
 export const metrics = [
-  { value: '6 年+', label: '持续记录与折腾' },
-  { value: '30+', label: '长期可复用文章' },
-  { value: '3 条线', label: 'AI、产品与技术实践' },
+  { value: 'AI 工具', label: '真实使用与落地' },
+  { value: '自动化', label: '把流程做顺' },
+  { value: '个人网站', label: '长期在线作品' },
 ];
 
 export const homeSections = [
   {
-    eyebrow: '写作主题',
-    title: '把复杂经验写成可复用的方法',
+    eyebrow: '当前关注',
+    title: '把 AI 真正接进可重复的工作流',
     description:
-      '不是追热点，而是把工具、工作流、认知和踩坑沉淀成可以再次使用的结构化内容。',
+      '我更关心 AI 怎样真正进入写作、整理、研究和发布，而不是只停留在演示层。',
   },
   {
-    eyebrow: '站点形态',
-    title: '博客、项目与个人品牌合一',
+    eyebrow: '站点定位',
+    title: '把博客做成长期维护的个人工作台',
     description:
-      '这不是一份模板博客，而是一座随内容一起成长的个人内容网站。',
+      '这里不只是发文章，也会持续记录项目、脚本、部署方案和每次真正踩过的坑。',
   },
   {
-    eyebrow: '技术原则',
-    title: '轻量、稳定、可扩展',
+    eyebrow: '更新方式',
+    title: '少说概念，多写可复用的过程',
     description:
-      '静态优先、对象存储承载资源、自动部署发布，让维护成本长期保持可控。',
+      '我会尽量把每次搭建、修复和优化写成别人看完就能照着做的内容，而不是只给结论。',
   },
 ];

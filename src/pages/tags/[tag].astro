@@ -16,7 +16,7 @@ const { tag } = Astro.props;
 const posts = (await getPublishedPosts()).filter((post) => post.data.tags.includes(tag));
 ---
 
-<BaseLayout title={`标签：${tag} | 刘强的博客`} description={`查看标签 ${tag} 下的所有文章`}>
+<BaseLayout title={`标签：${tag} | 刘强 | usgpt.us`} description={`查看标签 ${tag} 下的所有文章`}>
   <PageHero
     eyebrow="标签页"
     title={`与「${tag}」相关的内容`}

@@ -14,12 +14,12 @@ const featuredProjects = await getFeaturedProjects();
 
 <BaseLayout>
   <PageHero
-    eyebrow="中文个人站"
-    title="把技术、思考与长期积累，整理成一座耐读的网站"
+    eyebrow="usgpt.us"
+    title="把 AI 工具、自动化和个人网站，做成一套长期在线的工作台"
     description={siteConfig.intro}
     actions={[
-      { href: '/blog', label: '开始阅读' },
-      { href: '/about', label: '了解我', variant: 'secondary' },
+      { href: '/blog', label: '查看文章' },
+      { href: '/projects', label: '看项目', variant: 'secondary' },
     ]}
     aside={metrics}
   />
@@ -40,8 +40,8 @@ const featuredProjects = await getFeaturedProjects();
     <span class="eyebrow">精选文章</span>
     <div class="section-head">
       <div>
-        <h2 class="section-title">最近值得先读的几篇</h2>
-        <p class="section-copy">优先展示那些更能代表这座站点写作方向的文章：有方法、有结构，也有观点。</p>
+        <h2 class="section-title">先从这几篇开始认识这座站</h2>
+        <p class="section-copy">这些文章更接近我正在反复做、也愿意长期写下去的主题。</p>
       </div>
       <a class="button button-secondary" href="/blog">查看全部文章</a>
     </div>
@@ -54,8 +54,8 @@ const featuredProjects = await getFeaturedProjects();
     <span class="eyebrow">项目</span>
     <div class="section-head">
       <div>
-        <h2 class="section-title">写作之外，我也把想法做成产品</h2>
-        <p class="section-copy">项目页会持续记录正在推进的工具、站点和工作流实验。</p>
+        <h2 class="section-title">文章之外，我也会把东西真正做出来</h2>
+        <p class="section-copy">这里放的是站点、脚本、工具和工作流实验，不是只停在想法层。</p>
       </div>
       <a class="button button-secondary" href="/projects">浏览项目</a>
     </div>
