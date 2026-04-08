@@ -10,14 +10,14 @@ interface Props {
 const { eyebrow, title, description, actions = [], aside = [] } = Astro.props;
 ---
 
-<section class="container panel hero-surface hero-grid">
-  <div>
+<section class="page-hero panel">
+  <div class="page-hero-main">
     <span class="eyebrow">{eyebrow}</span>
-    <h1 class="hero-title">{title}</h1>
-    <p class="hero-copy">{description}</p>
+    <h1 class="page-hero-title">{title}</h1>
+    <p class="page-hero-copy">{description}</p>
     {
       actions.length > 0 && (
-        <div class="hero-actions">
+        <div class="page-hero-actions">
           {actions.map((action) => (
             <a
               class:list={[
@@ -33,76 +33,87 @@ const { eyebrow, title, description, actions = [], aside = [] } = Astro.props;
       )
     }
   </div>
+
   {
     aside.length > 0 && (
-      <div class="hero-aside">
+      <aside class="page-hero-side">
         {aside.map((item) => (
-          <article class="hero-stat">
+          <article class="page-hero-metric">
             <small>{item.label}</small>
             <strong>{item.value}</strong>
           </article>
         ))}
-      </div>
+      </aside>
     )
   }
 </section>
 
 <style>
-  .hero-grid {
+  .page-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-    gap: 30px;
-    align-items: center;
+    grid-template-columns: minmax(0, 1.22fr) minmax(320px, 0.78fr);
+    gap: 34px;
+    padding: 34px;
+    background: linear-gradient(180deg, rgba(255, 251, 246, 0.88), rgba(250, 244, 236, 0.9));
   }
 
-  .hero-title {
-    margin: 0;
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(2.5rem, 5vw, 4.8rem);
-    line-height: 1.06;
-    max-width: 12ch;
-  }
-
-  .hero-copy {
-    max-width: 42rem;
+  .page-hero-title {
     margin: 18px 0 0;
-    color: var(--text-soft);
-    font-size: 1.05rem;
-    line-height: 1.95;
+    max-width: 11ch;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
   }
 
-  .hero-actions {
+  .page-hero-copy {
+    max-width: 42rem;
+    margin: 24px 0 0;
+    color: var(--text-soft);
+    font-size: 1.08rem;
+    line-height: 1.9;
+  }
+
+  .page-hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    margin-top: 24px;
+    margin-top: 28px;
   }
 
-  .hero-aside {
+  .page-hero-side {
     display: grid;
     gap: 14px;
+    align-content: start;
   }
 
-  .hero-stat {
+  .page-hero-metric {
     padding: 20px 22px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.58);
-    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(222, 203, 183, 0.8);
   }
 
-  .hero-stat small {
+  .page-hero-metric small {
     display: block;
     margin-bottom: 8px;
-    color: var(--text-soft);
+    color: #8c765f;
+    font-size: 0.84rem;
   }
 
-  .hero-stat strong {
-    font-size: 1.08rem;
+  .page-hero-metric strong {
+    font-size: 1.12rem;
   }
 
   @media (max-width: 960px) {
-    .hero-grid {
+    .page-hero {
       grid-template-columns: 1fr;
+      padding: 28px 24px;
+    }
+
+    .page-hero-title {
+      max-width: none;
+      font-size: clamp(2.2rem, 9vw, 3.1rem);
     }
   }
 </style>

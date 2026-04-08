@@ -1,19 +1,19 @@
 ---
-title: usgpt.us 重建
-summary: 用 Astro、Caddy、Cloudflare 和自动部署，把 usgpt.us 做成一座能长期更新的个人网站。
+title: 个人网站重建
+summary: 用静态框架、反向代理、域名服务和自动发布，把这座站做成一座能长期更新的个人网站。
 year: 2026
 status: 进行中
 stack:
-  - Astro
-  - Caddy
-  - Cloudflare
-  - GitHub Actions
+  - 静态站
+  - 反向代理
+  - 域名服务
+  - 自动发布
 featured: true
 demo: https://usgpt.us
 repo: https://github.com/jian-2582/blog
 ---
 
-这个项目不只是做一个博客，而是把 `usgpt.us` 做成一座长期在线的个人网站。
+这个项目不只是做一个博客，而是把这座站做成一座长期在线的个人网站。
 
 它包含几层目标：
 

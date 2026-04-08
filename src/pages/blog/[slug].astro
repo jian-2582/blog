@@ -9,10 +9,19 @@ export async function getStaticPaths() {
 }
 
 const { post, posts } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const relatedPosts = getRelatedPosts(posts, post.id, post.data.tags);
+const currentIndex = posts.findIndex((entry) => entry.id === post.id);
+const previousPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : undefined;
+const nextPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
 ---
 
-<PostLayout entry={post} relatedPosts={relatedPosts}>
+<PostLayout
+  entry={post}
+  relatedPosts={relatedPosts}
+  headings={headings}
+  previousPost={previousPost}
+  nextPost={nextPost}
+>
   <Content />
 </PostLayout>

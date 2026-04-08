@@ -1,12 +1,12 @@
 ---
-title: R2 资源托管
+title: 对象存储资源托管
 summary: 把图片、封面和附件从源站磁盘里拆出来，减少服务器压力并提升可维护性。
 year: 2026
 status: 进行中
 stack:
-  - Cloudflare R2
-  - S3 API
-  - CDN
+  - 对象存储
+  - 接口访问
+  - 内容分发
 featured: false
 ---
 

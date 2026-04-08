@@ -1,27 +1,66 @@
 <section class="container panel banner">
   <div>
     <span class="eyebrow">保持更新</span>
-    <h2 class="section-title">如果你也在折腾 AI、自动化和个人网站，这里会持续更新。</h2>
+    <h2 class="section-title">如果你也在折腾人工智能、自动化和个人网站，这里会持续更新。</h2>
+    <p class="banner-copy">保持编辑感，但把收束做得更像品牌落点，而不是普通的页脚横条。</p>
   </div>
   <div class="banner-actions">
-    <a class="button button-primary" href="/rss.xml">订阅 RSS</a>
-    <a class="button button-secondary" href="mailto:hi@usgpt.us">邮件联系</a>
+    <a class="button button-primary" href="/rss.xml">订阅更新</a>
+    <a class="button button-secondary" href="mailto:hi@usgpt.us">联系我</a>
   </div>
 </section>
 
 <style>
   .banner {
+    margin-top: 94px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    padding: 28px;
+    gap: 24px;
+    padding: 40px 42px;
+    background: linear-gradient(135deg, #a86635, #7b421d);
+    color: #fff7ef;
   }
 
   .banner-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+  }
+
+  .banner-copy {
+    max-width: 42rem;
+    margin: 16px 0 0;
+    color: rgba(255, 247, 239, 0.84);
+    line-height: 1.8;
+  }
+
+  .banner :global(.eyebrow),
+  .banner :global(.section-title) {
+    color: #fff8f1;
+  }
+
+  .banner :global(.eyebrow)::before {
+    background: rgba(255, 248, 241, 0.7);
+  }
+
+  .banner :global(.button-primary) {
+    background: #fff8f0;
+    color: #7c4824;
+    box-shadow: none;
+  }
+
+  .banner :global(.button-secondary) {
+    color: #fff9f3;
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
+  @media (max-width: 720px) {
+    .banner {
+      margin-top: 56px;
+      padding: 28px 24px;
+    }
   }
 </style>

@@ -1,9 +1,9 @@
 export const siteConfig = {
-  title: '刘强 | usgpt.us',
-  description: '一个持续记录 AI 工具、自动化流程、个人网站与独立产品实践的中文站点。',
+  title: '刘强的个人工作台',
+  description: '一个持续记录人工智能工具、自动化流程、个人网站与独立产品实践的中文站点。',
   siteUrl: 'https://usgpt.us',
   author: '刘强',
-  intro: '这里写我正在做的事：AI 工具、自动化流程、个人网站，以及把想法做成可用产品的过程。',
+  intro: '这里写我正在做的事：人工智能工具、自动化流程、个人网站，以及把想法做成可用产品的过程。',
   email: 'hi@usgpt.us',
   navigation: [
     { href: '/', label: '首页' },
@@ -13,14 +13,14 @@ export const siteConfig = {
     { href: '/about', label: '关于' },
     { href: '/search', label: '搜索' },
   ],
-  social: [{ href: 'https://github.com/jian-2582', label: 'GitHub' }],
+  social: [{ href: 'https://github.com/jian-2582', label: '代码仓库' }],
   seo: {
     defaultOg: '/og/default-og.svg',
   },
 } as const;
 
 export const metrics = [
-  { value: 'AI 工具', label: '真实使用与落地' },
+  { value: '人工智能工具', label: '真实使用与落地' },
   { value: '自动化', label: '把流程做顺' },
   { value: '个人网站', label: '长期在线作品' },
 ];
@@ -28,9 +28,9 @@ export const metrics = [
 export const homeSections = [
   {
     eyebrow: '当前关注',
-    title: '把 AI 真正接进可重复的工作流',
+    title: '把人工智能真正接进可重复的工作流',
     description:
-      '我更关心 AI 怎样真正进入写作、整理、研究和发布，而不是只停留在演示层。',
+      '我更关心人工智能怎样真正进入写作、整理、研究和发布，而不是只停留在演示层。',
   },
   {
     eyebrow: '站点定位',

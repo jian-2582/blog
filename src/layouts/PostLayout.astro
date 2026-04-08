@@ -2,27 +2,32 @@
 import BaseLayout from '../components/BaseLayout.astro';
 import GiscusComments from '../components/GiscusComments.astro';
 import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
 import { formatDate, slugifyTag } from '../lib/format';
 import { getReadingMinutes } from '../lib/content';
 
 interface Props {
   entry: CollectionEntry<'blog'>;
   relatedPosts?: CollectionEntry<'blog'>[];
+  headings?: MarkdownHeading[];
+  previousPost?: CollectionEntry<'blog'>;
+  nextPost?: CollectionEntry<'blog'>;
 }
 
-const { entry, relatedPosts = [] } = Astro.props;
+const { entry, relatedPosts = [], headings = [], previousPost, nextPost } = Astro.props;
 const readingMinutes = getReadingMinutes(entry);
-const pageTitle = `${entry.data.title} | 刘强 | usgpt.us`;
+const pageTitle = `${entry.data.title} | 刘强的个人工作台`;
 const pageDescription = entry.data.description;
+const tocHeadings = headings.filter((heading) => heading.depth <= 2);
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} currentPath={`/blog/${entry.id}/`}>
-  <article class="container article-shell">
+  <article class="article-shell">
     <header class="panel article-hero">
       <span class="eyebrow">文章</span>
       <h1>{entry.data.title}</h1>
       <p class="lead">{entry.data.description}</p>
-      <div class="meta-row">
+      <div class="article-meta">
         <span>{formatDate(entry.data.pubDate)}</span>
         {entry.data.updatedDate && <span>更新于 {formatDate(entry.data.updatedDate)}</span>}
         <span>{readingMinutes} 分钟阅读</span>
@@ -34,15 +39,39 @@ const pageDescription = entry.data.description;
       </div>
     </header>
 
-    <div class="two-column article-grid">
-      <section class="panel article-main">
+    <div class="article-layout">
+      <aside class="article-toc">
+        <span class="eyebrow">目录</span>
+        <div class="toc-list">
+          {
+            tocHeadings.length > 0 ? (
+              tocHeadings.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)
+            ) : (
+              <span>这篇文章没有目录。</span>
+            )
+          }
+        </div>
+      </aside>
+
+      <section class="article-main">
         <div class="prose">
           <slot />
         </div>
+
+        {(previousPost || nextPost) && (
+          <div class="pager">
+            {previousPost ? (
+              <a href={`/blog/${previousPost.id}/`}>← 上一篇：{previousPost.data.title}</a>
+            ) : (
+              <span></span>
+            )}
+            {nextPost ? <a href={`/blog/${nextPost.id}/`}>下一篇：{nextPost.data.title} →</a> : <span></span>}
+          </div>
+        )}
       </section>
 
       <aside class="article-side">
-        <section class="panel side-card">
+        <section class="side-card">
           <span class="eyebrow">文章信息</span>
           <div class="side-list">
             <div>
@@ -62,7 +91,7 @@ const pageDescription = entry.data.description;
 
         {
           relatedPosts.length > 0 && (
-            <section class="panel side-card">
+            <section class="side-card">
               <span class="eyebrow">继续阅读</span>
               <div class="related-list">
                 {relatedPosts.map((post) => (
@@ -86,33 +115,87 @@ const pageDescription = entry.data.description;
 
 <style>
   .article-shell {
-    display: grid;
-    gap: 24px;
+    width: min(1180px, calc(100vw - 44px));
+    margin: 0 auto;
   }
 
-  .article-hero,
-  .article-main,
-  .side-card {
-    padding: 30px;
+  .article-hero {
+    padding: 40px 42px;
+    background: linear-gradient(180deg, rgba(255, 251, 246, 0.88), rgba(250, 244, 236, 0.92));
   }
 
   .article-hero h1 {
     margin: 0;
-    max-width: 16ch;
+    max-width: 15ch;
     font-family: 'Noto Serif SC', serif;
-    font-size: clamp(2.3rem, 4vw, 4rem);
+    font-size: clamp(2.5rem, 4vw, 4.2rem);
     line-height: 1.12;
+    letter-spacing: -0.03em;
   }
 
   .lead {
-    max-width: 44rem;
-    margin: 18px 0 0;
+    max-width: 48rem;
+    margin: 24px 0 0;
     color: var(--text-soft);
-    line-height: 1.9;
+    font-size: 1.1rem;
+    line-height: 1.92;
   }
 
-  .article-grid {
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 24px;
+    color: #8a7561;
+    font-size: 0.94rem;
+  }
+
+  .article-layout {
+    display: grid;
+    grid-template-columns: minmax(190px, 0.75fr) minmax(0, 2.1fr) minmax(220px, 0.85fr);
+    gap: 24px;
+    margin-top: 26px;
     align-items: start;
+  }
+
+  .article-toc,
+  .article-side {
+    position: sticky;
+    top: 110px;
+  }
+
+  .article-toc,
+  .side-card {
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    border: 1px solid rgba(228, 212, 196, 0.95);
+    box-shadow: var(--shadow);
+  }
+
+  .toc-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .toc-list a,
+  .toc-list span {
+    color: var(--text-soft);
+    line-height: 1.8;
+    font-size: 0.96rem;
+  }
+
+  .toc-list a:hover {
+    color: var(--accent-deep);
+  }
+
+  .article-main {
+    padding: 38px 48px;
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    border: 1px solid rgba(228, 212, 196, 0.95);
+    box-shadow: var(--shadow);
   }
 
   .article-side {
@@ -155,10 +238,78 @@ const pageDescription = entry.data.description;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 20px;
+  }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 42px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  .pager a,
+  .pager span {
+    color: var(--accent-deep);
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.7;
   }
 
   .comments-block {
-    margin-top: 6px;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 1100px) {
+    .article-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .article-toc,
+    .article-side {
+      position: static;
+    }
+
+    .article-main {
+      order: 1;
+    }
+
+    .article-toc {
+      order: 2;
+    }
+
+    .article-side {
+      order: 3;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .article-shell {
+      width: calc(100vw - 24px);
+    }
+
+    .article-hero {
+      padding: 28px 24px;
+    }
+
+    .article-hero h1 {
+      font-size: clamp(2.2rem, 10vw, 3rem);
+    }
+
+    .lead {
+      font-size: 1rem;
+    }
+
+    .article-main,
+    .article-toc,
+    .side-card {
+      padding: 24px;
+    }
+
+    .pager {
+      flex-direction: column;
+    }
   }
 </style>

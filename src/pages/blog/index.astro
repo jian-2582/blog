@@ -1,68 +1,222 @@
 ---
 import BaseLayout from '../../components/BaseLayout.astro';
-import PageHero from '../../components/PageHero.astro';
-import PostCard from '../../components/PostCard.astro';
-import { getAllTags, getPublishedPosts, getTagCountMap } from '../../lib/content';
+import { getAllTags, getFeaturedPosts, getPublishedPosts, getTagCountMap } from '../../lib/content';
 import { slugifyTag } from '../../lib/format';
 
 const posts = await getPublishedPosts();
+const featuredPosts = await getFeaturedPosts();
 const tags = getAllTags(posts);
 const tagCounts = getTagCountMap(posts);
 ---
 
-<BaseLayout title="博客 | 刘强 | usgpt.us" description="所有文章与标签索引" currentPath="/blog">
-  <PageHero
-    eyebrow="博客"
-    title="文章归档与标签索引"
-    description="所有内容都围绕一个原则展开：尽量把经验写成别人明天就能复用的东西。"
-    aside={[
-      { label: '文章总数', value: `${posts.length} 篇` },
-      { label: '标签数量', value: `${tags.length} 个` },
-    ]}
-  />
-
-  <section class="container section-block">
-    <div class="tag-cloud panel">
+<BaseLayout title="文章 | 刘强的个人工作台" description="文章归档与专题索引" currentPath="/blog">
+  <section class="blog-hero panel">
+    <span class="eyebrow">文章列表</span>
+    <h1 class="hero-title">文章归档与专题索引</h1>
+    <p class="hero-copy">阅读页保持安静，列表页更强调秩序与筛选感。让读者一眼知道你在长期写什么，以及该从哪里开始读起。</p>
+    <div class="tag-cloud">
       {tags.map((tag) => (
         <a class="chip" href={`/tags/${slugifyTag(tag)}/`}>
-          #{tag}
+          {tag}
           <small>{tagCounts[tag]}</small>
         </a>
       ))}
     </div>
   </section>
 
-  <section class="container post-grid">
-    {posts.map((post) => <PostCard post={post} />)}
+  <section class="blog-layout">
+    <aside class="blog-sidebar">
+      <div class="sidebar-card panel">
+        <h2>浏览方式</h2>
+        <div class="sidebar-list">
+          <span><em>全部文章</em><strong>{posts.length}</strong></span>
+          <span><em>精选文章</em><strong>{featuredPosts.length}</strong></span>
+          <span><em>专题标签</em><strong>{tags.length}</strong></span>
+          <span><em>最新更新</em><strong>{posts[0] ? '本月' : '暂无'}</strong></span>
+        </div>
+      </div>
+
+      <div class="sidebar-card panel">
+        <h2>推荐从这里开始</h2>
+        <div class="recommended-list">
+          {featuredPosts.slice(0, 3).map((post) => (
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          ))}
+        </div>
+      </div>
+    </aside>
+
+    <div class="blog-main">
+      {posts.map((post) => (
+        <a class="list-card panel" href={`/blog/${post.id}/`}>
+          <div class="meta-row">
+            <span>{post.data.pubDate.toLocaleDateString('zh-CN')}</span>
+            <span>{post.data.tags.join(' / ')}</span>
+          </div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+          <div class="chips">
+            {post.data.featured && <span class="chip">精选</span>}
+            {post.data.tags.slice(0, 2).map((tag) => (
+              <span class="chip">{tag}</span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  .section-block {
-    margin-top: 24px;
+  .blog-hero {
+    padding: 34px;
+    background: linear-gradient(180deg, rgba(255, 251, 246, 0.88), rgba(250, 244, 236, 0.9));
+  }
+
+  .hero-title {
+    margin: 18px 0 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-copy {
+    max-width: 48rem;
+    margin: 24px 0 0;
+    color: var(--text-soft);
+    font-size: 1.08rem;
+    line-height: 1.9;
   }
 
   .tag-cloud {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    padding: 24px;
+    margin-top: 26px;
   }
 
   .tag-cloud small {
-    opacity: 0.7;
+    opacity: 0.76;
   }
 
-  .post-grid {
+  .blog-layout {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(260px, 0.74fr) minmax(0, 1.26fr);
+    gap: 26px;
+    margin-top: 30px;
+  }
+
+  .blog-sidebar {
+    display: grid;
+    gap: 20px;
+    align-content: start;
+  }
+
+  .sidebar-card {
+    padding: 24px;
+  }
+
+  .sidebar-card h2 {
+    margin: 0 0 18px;
+    font-size: 0.98rem;
+    color: #8f7057;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .sidebar-list span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--text-soft);
+    font-size: 0.98rem;
+  }
+
+  .sidebar-list em {
+    font-style: normal;
+  }
+
+  .sidebar-list strong {
+    color: var(--text);
+  }
+
+  .recommended-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .recommended-list a {
+    color: var(--text-soft);
+    line-height: 1.8;
+  }
+
+  .recommended-list a:hover {
+    color: var(--accent-deep);
+  }
+
+  .blog-main {
+    display: grid;
     gap: 22px;
+  }
+
+  .list-card {
+    display: block;
+    padding: 28px;
+  }
+
+  .list-card h2 {
+    margin: 18px 0 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 2rem;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .list-card p {
+    margin: 18px 0 0;
+    color: var(--text-soft);
+    line-height: 1.88;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 24px;
   }
 
-  @media (max-width: 900px) {
-    .post-grid {
+  @media (max-width: 1024px) {
+    .blog-layout {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .blog-hero {
+      padding: 24px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 10vw, 3.2rem);
+    }
+
+    .hero-copy {
+      font-size: 1rem;
+    }
+
+    .list-card {
+      padding: 22px;
+    }
+
+    .list-card h2 {
+      font-size: 1.58rem;
     }
   }
 </style>

@@ -1,34 +1,48 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
 import NewsletterBanner from '../components/NewsletterBanner.astro';
-import PageHero from '../components/PageHero.astro';
 import PostCard from '../components/PostCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { getFeaturedPosts, getFeaturedProjects, getPublishedPosts } from '../lib/content';
+import { getFeaturedPosts, getFeaturedProjects } from '../lib/content';
 import { homeSections, metrics, siteConfig } from '../data/site';
 
 const featuredPosts = await getFeaturedPosts();
-const latestPosts = (await getPublishedPosts()).slice(0, 4);
-const featuredProjects = await getFeaturedProjects();
+const featuredProjects = await getFeaturedProjects(2);
 ---
 
 <BaseLayout>
-  <PageHero
-    eyebrow="usgpt.us"
-    title="把 AI 工具、自动化和个人网站，做成一套长期在线的工作台"
-    description={siteConfig.intro}
-    actions={[
-      { href: '/blog', label: '查看文章' },
-      { href: '/projects', label: '看项目', variant: 'secondary' },
-    ]}
-    aside={metrics}
-  />
+  <section class="home-hero">
+    <div class="home-hero-main">
+      <span class="eyebrow">站点首页</span>
+      <h1 class="home-title">把人工智能、自动化与个人网站，做成一座长期在线的个人工作台</h1>
+      <p class="home-copy">{siteConfig.intro}</p>
+      <div class="home-actions">
+        <a class="button button-primary" href="/blog">查看文章</a>
+        <a class="button button-secondary" href="/projects">浏览项目</a>
+      </div>
+    </div>
 
-  <section class="container home-grid">
-    <div class="home-intro grid">
+    <aside class="home-side panel">
+      <div class="metric-stack">
+        {metrics.map((item) => (
+          <article class="metric-card">
+            <small>{item.label}</small>
+            <strong>{item.value}</strong>
+          </article>
+        ))}
+      </div>
+      <div class="home-side-copy">
+        <p>视觉基调</p>
+        <strong>编辑部感 + 个人工作台气质</strong>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section">
+    <span class="eyebrow">当前关注</span>
+    <div class="focus-grid">
       {homeSections.map((item) => (
-        <article class="panel feature-card">
-          <span class="eyebrow">{item.eyebrow}</span>
+        <article class="focus-card panel">
+          <strong>{item.eyebrow}</strong>
           <h2>{item.title}</h2>
           <p>{item.description}</p>
         </article>
@@ -36,41 +50,34 @@ const featuredProjects = await getFeaturedProjects();
     </div>
   </section>
 
-  <section class="container section-block">
-    <span class="eyebrow">精选文章</span>
+  <section class="section">
     <div class="section-head">
       <div>
+        <span class="eyebrow">精选文章</span>
         <h2 class="section-title">先从这几篇开始认识这座站</h2>
-        <p class="section-copy">这些文章更接近我正在反复做、也愿意长期写下去的主题。</p>
+        <p class="section-copy">卡片布局保留明显主次和更强的阅读节奏，让首页看起来像一张有编辑判断的封面。</p>
       </div>
-      <a class="button button-secondary" href="/blog">查看全部文章</a>
+      <a class="ghost-pill" href="/blog">查看全部文章</a>
     </div>
-    <div class="post-grid">
+    <div class="home-post-grid">
       {featuredPosts.map((post) => <PostCard post={post} />)}
     </div>
   </section>
 
-  <section class="container section-block">
-    <span class="eyebrow">项目</span>
-    <div class="section-head">
+  <section class="section project-stage">
+    <div class="section-head project-head">
       <div>
+        <span class="eyebrow">项目</span>
         <h2 class="section-title">文章之外，我也会把东西真正做出来</h2>
-        <p class="section-copy">这里放的是站点、脚本、工具和工作流实验，不是只停在想法层。</p>
+        <p class="section-copy">这里采用工作台式排版，让项目区看起来更像一张正在推进中的桌面，而不是普通卡片堆砌。</p>
       </div>
-      <a class="button button-secondary" href="/projects">浏览项目</a>
     </div>
-    <div class="project-grid">
-      {featuredProjects.map((project) => <ProjectCard project={project} />)}
-    </div>
-  </section>
-
-  <section class="container section-block">
-    <span class="eyebrow">最近更新</span>
-    <div class="timeline panel">
-      {latestPosts.map((post) => (
-        <a href={`/blog/${post.id}/`} class="timeline-item">
-          <strong>{post.data.title}</strong>
-          <span>{post.data.description}</span>
+    <div class="project-lanes">
+      {featuredProjects.map((project) => (
+        <a class="project-lane panel" href={`/projects/${project.id}/`}>
+          <strong>{project.data.status}</strong>
+          <h3>{project.data.title}</h3>
+          <p>{project.data.summary}</p>
         </a>
       ))}
     </div>
@@ -80,74 +87,258 @@ const featuredProjects = await getFeaturedProjects();
 </BaseLayout>
 
 <style>
-  .home-grid,
-  .section-block {
-    margin-top: 26px;
+  .section {
+    margin-top: 86px;
   }
 
-  .home-intro {
+  .home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+    gap: 34px;
+    align-items: stretch;
+  }
+
+  .home-hero-main {
+    padding: 14px 0 0 6px;
+  }
+
+  .home-title {
+    margin: 24px 0 0;
+    max-width: 10.5ch;
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(3rem, 5.8vw, 4.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+
+  .home-copy {
+    max-width: 40rem;
+    margin: 30px 0 0;
+    color: var(--text-soft);
+    font-size: 1.18rem;
+    line-height: 1.92;
+  }
+
+  .home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 34px;
+  }
+
+  .home-side {
+    position: relative;
+    min-height: 430px;
+    padding: 32px;
+    background: linear-gradient(180deg, #f7efe6 0%, #f2e7da 100%);
+    overflow: hidden;
+  }
+
+  .home-side::before {
+    content: '';
+    position: absolute;
+    inset: 26px auto auto 28px;
+    width: 170px;
+    height: 170px;
+    border-radius: 999px;
+    background: rgba(194, 146, 102, 0.16);
+  }
+
+  .home-side::after {
+    content: '';
+    position: absolute;
+    right: -38px;
+    bottom: 14px;
+    width: 240px;
+    height: 240px;
+    border-radius: 999px;
+    border: 2px solid rgba(123, 86, 54, 0.14);
+  }
+
+  .metric-stack {
+    position: absolute;
+    right: 28px;
+    top: 32px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .metric-card {
+    width: 138px;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(224, 205, 184, 0.82);
+  }
+
+  .metric-card small {
+    display: block;
+    margin-bottom: 6px;
+    color: #8a7764;
+    font-size: 0.75rem;
+  }
+
+  .metric-card strong {
+    font-size: 1.06rem;
+  }
+
+  .home-side-copy {
+    position: absolute;
+    left: 30px;
+    bottom: 28px;
+  }
+
+  .home-side-copy p {
+    margin: 0;
+    color: #8d7662;
+    font-size: 0.92rem;
+  }
+
+  .home-side-copy strong {
+    display: block;
+    max-width: 15ch;
+    margin-top: 12px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 2.05rem;
+    line-height: 1.24;
+  }
+
+  .focus-grid {
+    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 28px;
   }
 
-  .feature-card {
+  .focus-card {
+    min-height: 250px;
     padding: 28px;
   }
 
-  .feature-card h2 {
-    margin: 0;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.45rem;
-    line-height: 1.4;
+  .focus-card strong {
+    display: block;
+    margin-bottom: 18px;
+    color: #90735b;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
-  .feature-card p {
-    margin: 14px 0 0;
+  .focus-card h2 {
+    margin: 0;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 2rem;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
+  }
+
+  .focus-card p {
+    margin: 18px 0 0;
     color: var(--text-soft);
     line-height: 1.9;
   }
 
-  .section-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 18px;
-    margin-bottom: 18px;
+  .ghost-pill {
+    align-self: flex-end;
   }
 
-  .post-grid,
-  .project-grid {
+  .home-post-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 1.06fr 1fr 0.94fr;
     gap: 22px;
+    margin-top: 28px;
   }
 
-  .timeline {
+  .project-stage {
+    padding: 34px;
+    border-radius: 34px;
+    background: linear-gradient(180deg, #f0e7dc 0%, #ece0d1 100%);
+    border: 1px solid rgba(223, 203, 184, 0.94);
+  }
+
+  .project-head {
+    margin-bottom: 28px;
+  }
+
+  .project-lanes {
     display: grid;
-    padding: 12px 24px;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
   }
 
-  .timeline-item {
-    display: grid;
-    gap: 8px;
-    padding: 18px 0;
-    border-top: 1px solid var(--line);
+  .project-lane {
+    display: block;
+    padding: 24px;
+    border-radius: 24px;
   }
 
-  .timeline-item:first-child {
-    border-top: 0;
+  .project-lane strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #90735b;
+    font-size: 0.88rem;
   }
 
-  .timeline-item span {
+  .project-lane h3 {
+    margin: 0 0 10px;
+    font-size: 1.72rem;
+  }
+
+  .project-lane p {
+    margin: 0;
     color: var(--text-soft);
-    line-height: 1.85;
+    line-height: 1.82;
   }
 
-  @media (max-width: 960px) {
-    .home-intro,
-    .post-grid,
-    .project-grid {
+  @media (max-width: 1100px) {
+    .home-hero,
+    .home-post-grid,
+    .focus-grid,
+    .project-lanes {
       grid-template-columns: 1fr;
+    }
+
+    .home-side {
+      min-height: 360px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .section {
+      margin-top: 54px;
+    }
+
+    .home-hero-main {
+      padding-left: 0;
+    }
+
+    .home-title {
+      max-width: none;
+      font-size: clamp(2.45rem, 11vw, 3.4rem);
+    }
+
+    .home-copy {
+      font-size: 1rem;
+      line-height: 1.9;
+    }
+
+    .home-side {
+      min-height: 320px;
+      padding: 24px;
+    }
+
+    .metric-stack {
+      right: 20px;
+      top: 20px;
+    }
+
+    .metric-card {
+      width: 124px;
+    }
+
+    .project-stage {
+      padding: 24px;
     }
   }
 </style>
