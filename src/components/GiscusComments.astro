@@ -1,10 +1,5 @@
 ---
-const repo = import.meta.env.PUBLIC_GISCUS_REPO;
-const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
-const category = import.meta.env.PUBLIC_GISCUS_CATEGORY;
-const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
-
-const isConfigured = Boolean(repo && repoId && category && categoryId);
+const repo = import.meta.env.PUBLIC_COMMENT_REPO || 'jian-2582/blog';
 ---
 
 <section class="panel comments-wrap">
@@ -12,33 +7,17 @@ const isConfigured = Boolean(repo && repoId && category && categoryId);
     <span class="eyebrow">评论</span>
     <h2 class="section-title">讨论与反馈</h2>
   </div>
-
-  {
-    isConfigured ? (
-      <div class="giscus-host">
-        <script
-          src="https://giscus.app/client.js"
-          data-repo={repo}
-          data-repo-id={repoId}
-          data-category={category}
-          data-category-id={categoryId}
-          data-mapping="pathname"
-          data-strict="0"
-          data-reactions-enabled="1"
-          data-emit-metadata="0"
-          data-input-position="top"
-          data-theme="light"
-          data-lang="zh-CN"
-          crossorigin="anonymous"
-          async
-        ></script>
-      </div>
-    ) : (
-      <p class="comments-note">
-        评论组件已经预留完成。等 GitHub Discussions 启用并补上 giscus 的仓库参数后，评论区会自动生效。
-      </p>
-    )
-  }
+  <div class="utterances-host">
+    <script
+      src="https://utteranc.es/client.js"
+      repo={repo}
+      issue-term="pathname"
+      label="comment"
+      theme="github-light"
+      crossorigin="anonymous"
+      async
+    ></script>
+  </div>
 </section>
 
 <style>
@@ -50,9 +29,7 @@ const isConfigured = Boolean(repo && repoId && category && categoryId);
     margin-bottom: 20px;
   }
 
-  .comments-note {
-    margin: 0;
-    color: var(--text-soft);
-    line-height: 1.9;
+  .utterances-host {
+    min-height: 220px;
   }
 </style>

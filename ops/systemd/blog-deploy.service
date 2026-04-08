@@ -1,0 +1,9 @@
+[Unit]
+Description=Deploy blog from GitHub
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/site-source
+ExecStart=/usr/local/bin/deploy-blog.sh

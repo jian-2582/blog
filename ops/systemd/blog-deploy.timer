@@ -1,0 +1,10 @@
+[Unit]
+Description=Run blog deployment timer
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=blog-deploy.service
+
+[Install]
+WantedBy=timers.target
